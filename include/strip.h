@@ -1,9 +1,16 @@
+#pragma once
 #include <Adafruit_NeoPixel.h>
 #include "Constants.h"
 
 #ifndef STRIPS_H
 #define STRIPS_H
 
+/**
+ * Returns the remainder of the division of a by b.
+ * Will always be positive. instead of the default c++ modulo operator, which
+ * can be negative.
+*/
+int moduloEuclidean(int a, int b);
 
 /**
  * Sets the pixel at the given index to the given color
@@ -21,11 +28,22 @@ void setPixel(Adafruit_NeoPixel *strip, int index, uint32_t color);
 void flushColor(Adafruit_NeoPixel *strip, uint32_t color);
 
 /**
+ * Creates a color that is a mix of the two given colors with the given mix level.
+ * You will probably use this to mix the background color with the color of the electron.
+ * To do so, use color1 as the electron color, color2 as the background color, and the mix level as the level of brightness of the electron.
+ * @param COLOR1: The first color to mix
+ * @param COLOR2: The second color to mix
+ * @param MIXLEVEL: The level to mix the colors at, 1.0 is all color1, 0.0 is all color2
+ * @return The mixed color
+*/
+uint32_t mixColors(uint32_t Color1, uint32_t Color2, float mixLevel);
+
+/**
  * Moves the red color pixel by pixel from the back to the front removing the red color from the back
  * @param INDEX: The index of the pixel to light up
  * @param NUMPIXELS: The number of pixels in the strip will be used to wrap around the index, will leave an empty between them (might change later, should I?)
 */
-void moveColorFowardOnceLib(Adafruit_NeoPixel *strip, uint32_t color, uint32_t backgroundColor, int index, int numPixels, int pixelSpace);
+void moveColorForwardOnceLib(Adafruit_NeoPixel *strip, uint32_t color, uint32_t backgroundColor, int index, int numPixels, int pixelSpace);
 
 class NeoElectrons: public Adafruit_NeoPixel{
     private:
@@ -43,7 +61,6 @@ class NeoElectrons: public Adafruit_NeoPixel{
         NeoElectrons();
         NeoElectrons(uint16_t n, int16_t p, neoPixelType t, int pixelSpace);
         NeoElectrons(uint16_t n, int16_t p, neoPixelType t);
-        NeoElectrons(uint16_t n, int16_t p, int pixelSpace);
         NeoElectrons(uint16_t n, int16_t p);
         void setup();
         void setup(int brightness);
@@ -65,23 +82,23 @@ class NeoElectrons: public Adafruit_NeoPixel{
         */
         void setColors(uint32_t electronColor, uint32_t backgroundColor);
         /**
-         * Moves the electron foward once one pixel from the index
-         * Call this function periodically to move the electron foward
+         * Moves the electron forward once one pixel from the index
+         * Call this function periodically to move the electron forward
          * @return The Index of the first electron
         */
-        int moveColorFowardOnce(uint32_t color, uint32_t backgroundColor, int pixelAmount);
+        int moveColorForwardOnce(uint32_t color, uint32_t backgroundColor, int pixelAmount);
         /**
-         * Moves the electron foward once one pixel from the index
-         * Call this function periodically to move the electron foward
+         * Moves the electron forward once one pixel from the index
+         * Call this function periodically to move the electron forward
          * @return The Index of the first electron
         */
-        int moveColorFowardOnce(uint32_t color, uint32_t backgroundColor);
+        int moveColorForwardOnce(uint32_t color, uint32_t backgroundColor);
         /**
-         * Moves the electron foward once one pixel from the index
-         * Call this function periodically to move the electron foward
+         * Moves the electron forward once one pixel from the index
+         * Call this function periodically to move the electron forward
          * @return The Index of the first electron 
         */
-        int moveColorFowardOnce();
+        int moveColorForwardOnce();
 
         /**
          * Gets the index of the electron
@@ -111,7 +128,7 @@ class NeoElectrons: public Adafruit_NeoPixel{
         /**
          * Actually runs the blink command,
          * Will be called by the updateBlink function 
-         * so it is recoomended to use that instead
+         * so it is recommended to use that instead
         */
         void runBlink();
         
@@ -143,7 +160,7 @@ class NeoElectrons: public Adafruit_NeoPixel{
          * Sets the amount of electrons in the strip
          * @param electronAmount: The amount of electrons in the strip
         */
-        void setElectronAmont(int electronAmount) {this->electronAmount = electronAmount;}
+        void setElectronAmount(int electronAmount) {this->electronAmount = electronAmount;}
         
         /**
          * Increases the amount of electrons in the strip by one

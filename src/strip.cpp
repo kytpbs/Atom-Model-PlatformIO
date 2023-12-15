@@ -1,7 +1,16 @@
 #include "strip.h"
 
+int moduloEuclidean(int a, int b) {
+  int m = a % b;
+  if (m < 0) {
+    // m += (b < 0) ? -b : b; // avoid this form: it is UB when b == INT_MIN
+    m = (b < 0) ? m - b : m + b;
+  }
+  return m;
+}
+
 void setPixel(Adafruit_NeoPixel *strip, int index, uint32_t color) {
-    strip->setPixelColor(index % strip->numPixels(), color);
+    strip->setPixelColor(moduloEuclidean(index, strip->numPixels()), color);
 }
 
 void flushColor(Adafruit_NeoPixel *strip, uint32_t color) {
@@ -9,11 +18,27 @@ void flushColor(Adafruit_NeoPixel *strip, uint32_t color) {
     strip->show();
 }
 
-void moveColorFowardOnceLib(Adafruit_NeoPixel *strip, uint32_t color, uint32_t backgroundColor, int index, int numPixels, int pixelSpace) {
+uint32_t mixColors(uint32_t Color1, uint32_t Color2, float mixLevel) {
+    uint8_t r1 = (Color1 >> 16) & 0xFF;
+    uint8_t g1 = (Color1 >> 8) & 0xFF;
+    uint8_t b1 = Color1 & 0xFF;
+    uint8_t r2 = (Color2 >> 16) & 0xFF;
+    uint8_t g2 = (Color2 >> 8) & 0xFF;
+    uint8_t b2 = Color2 & 0xFF;
+    uint8_t r = (uint8_t)(r1 * mixLevel + r2 * (1 - mixLevel));
+    uint8_t g = (uint8_t)(g1 * mixLevel + g2 * (1 - mixLevel));
+    uint8_t b = (uint8_t)(b1 * mixLevel + b2 * (1 - mixLevel));
+    return Adafruit_NeoPixel::Color(r, g, b);
+}
+
+void moveColorForwardOnceLib(Adafruit_NeoPixel *strip, uint32_t color, uint32_t backgroundColor, int index, int numPixels, int pixelSpace) {
     strip->clear(); // Clear the strip
     strip->fill(backgroundColor, 0); // Set the background color
+    // mix background color with color
     for (int i = 0; i < numPixels; i++) {
         setPixel(strip, i * pixelSpace + index, color);
+        // setPixel(strip, i * pixelSpace + index - 2, mixColors(color, backgroundColor, 0.3));
+        // setPixel(strip, i * pixelSpace + index - 1, mixColors(color, backgroundColor, 0.6));
     }
     strip->show();
 }
@@ -33,10 +58,6 @@ NeoElectrons::NeoElectrons(uint16_t n, int16_t p): Adafruit_NeoPixel(n, p) {
 }
 
 NeoElectrons::NeoElectrons(uint16_t n, int16_t p, neoPixelType t, int pixelSpace): Adafruit_NeoPixel(n, p, t) {
-    this->pixelSpace = pixelSpace;
-}
-
-NeoElectrons::NeoElectrons(uint16_t n, int16_t p, int pixelSpace): Adafruit_NeoPixel(n, p) {
     this->pixelSpace = pixelSpace;
 }
 
@@ -60,29 +81,31 @@ void NeoElectrons::flushColor(uint32_t color) {
     show();
 }
 
-int NeoElectrons::moveColorFowardOnce(uint32_t color, uint32_t backgroundColor, int activePixelAmount) {
+int NeoElectrons::moveColorForwardOnce(uint32_t color, uint32_t backgroundColor, int activePixelAmount) {
     if (isBlinking()) {
         return electronIndex; // If the strip is blinking, don't move the electrons
     }
-
-    if (pixelSpace == DEFAULTPIXELSPACE) {
-        pixelSpace = numPixels() / activePixelAmount;
+    int currentPixelSpace;
+    if (this->pixelSpace == DEFAULTPIXELSPACE) {
+        currentPixelSpace = numPixels() / activePixelAmount;
     }
-
-    // Move the electrons foward
-    moveColorFowardOnceLib(this, color, backgroundColor, electronIndex, activePixelAmount, pixelSpace);
+    else {
+        currentPixelSpace = this->pixelSpace;
+    }
+    // Move the electrons forward
+    moveColorForwardOnceLib(this, color, backgroundColor, electronIndex, activePixelAmount, currentPixelSpace);
     
     // Increase the electron index
     this->electronIndex = (electronIndex + 1) % numPixels();
     return electronIndex;
 }
 
-int NeoElectrons::moveColorFowardOnce(uint32_t color, uint32_t backgroundColor) {
-    return moveColorFowardOnce(color, backgroundColor, electronAmount);
+int NeoElectrons::moveColorForwardOnce(uint32_t color, uint32_t backgroundColor) {
+    return moveColorForwardOnce(color, backgroundColor, electronAmount);
 }
 
-int NeoElectrons::moveColorFowardOnce() {
-    return moveColorFowardOnce(electronColor, backgroundColor);
+int NeoElectrons::moveColorForwardOnce() {
+    return moveColorForwardOnce(electronColor, backgroundColor);
 }
 
 void NeoElectrons::setColors(uint32_t electronColor, uint32_t backgroundColor) {
@@ -108,7 +131,6 @@ void NeoElectrons::runBlink() {
         }
         else {
             clear();
-            show();
         }
         blinkState = !blinkState;
         show();

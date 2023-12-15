@@ -16,25 +16,25 @@ const char PASS[]               = SECRET_OPTIONAL_PASS;    // Network password (
 const char DEVICE_KEY[]  = SECRET_DEVICE_KEY;    // Secret device password
 
 void onLedCountsChange();
+void onCloudSerialChange();
 void onInnerStripColorChange();
 void onOuterStripColorChange();
 void onSmallStripColorChange();
-void onTriggerSwitchChange();
 
 String ledCounts;
+String cloudSerial;
 CloudColor innerStripColor;
 CloudColor outerStripColor;
 CloudColor smallStripColor;
-bool triggerSwitch;
 
 void initProperties(){
-
   ArduinoCloud.setBoardId(DEVICE_LOGIN_NAME);
   ArduinoCloud.setSecretDeviceKey(DEVICE_KEY);  
   ArduinoCloud.addProperty(innerStripColor, READWRITE, ON_CHANGE, onInnerStripColorChange);
   ArduinoCloud.addProperty(outerStripColor, READWRITE, ON_CHANGE, onOuterStripColorChange);
   ArduinoCloud.addProperty(smallStripColor, READWRITE, ON_CHANGE, onSmallStripColorChange);
-
+  ArduinoCloud.addProperty(ledCounts, READWRITE, ON_CHANGE, onLedCountsChange);
+  ArduinoCloud.addProperty(cloudSerial, READWRITE, ON_CHANGE, onCloudSerialChange);
 }
 
 WiFiConnectionHandler ArduinoIoTPreferredConnection(SSID, PASS);
