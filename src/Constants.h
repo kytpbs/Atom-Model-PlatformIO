@@ -48,7 +48,7 @@
 #define SMALLPIXELSPACE SMALLNUMPIXELS/SMALLPIXELAMOUNT
 
 
-#define BRIGHTNESS 0 // The brightness of the LEDS should be a value from 0 - 255 (0 being MAX)
+#define BRIGHTNESS 255 // The brightness of the LEDS should be a value from 0 - 255 (255 being MAX)
 
 //Electron Colors of the small Strip should be values from (0 - 255):
 #define smallRED 255
