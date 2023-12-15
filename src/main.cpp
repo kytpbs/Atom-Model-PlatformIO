@@ -1,7 +1,7 @@
 #include <Arduino.h>
 
 #include "Constants.h"
-#include "strip.h"
+#include "stripCommands.h"
 
 #if defined(ARDUINO_ARCH_ESP32) || defined(ARDUINO_ARCH_ESP8266) // only include if we are on an ESP
 #include "thingProperties.h"
@@ -32,7 +32,6 @@ NeoElectrons outerStrip (OUTNUMPIXELS, OUTDATA, NEO_GRB + NEO_KHZ800);     // Cr
 NeoElectrons outerStrip2(OUTNUMPIXELS, OUTDATA2, NEO_GRB + NEO_KHZ800);    // Create the second outer strip object
 NeoElectrons outerStrip3(OUTNUMPIXELS, OUTDATA3, NEO_GRB + NEO_KHZ800);    // Create the third outer strip object
 
-unsigned long lastSwitchTime = 0; // The last time the pixels switched
 bool builtinLedState = false; // The state of the builtin led
 
 /* START OF FUNCTIONS DEFINITONS */
@@ -59,105 +58,6 @@ void onCloudSerialChange();
 #else
 void blinkBuiltInLed();
 #endif
-namespace stripCommands {
-    void setupStrips();
-    void moveElectronForward();
-    void updateBlinks();
-    void blinkAll(int times);
-    void switchPixel();
-    bool shouldSwitch();
-    void runSwitch();
-}
-
-/* END OF FUNCTION DEFINITONS*/
-// for some reason this didn't work on a separate function, so I just put it here for now.
-// you can just collapse this section if you want.
-namespace stripCommands {
-    /**
-     * @brief Sets up the LED strips.
-     * @param strips The NeoElectrons object array to setup all the strips. Should be of size 5.
-    */
-    void setupStrips() {
-        // Setup inner strips
-        Serial.println("Setting up inner strip1...");
-        innerStrip.setup(BRIGHTNESS); // This initializes the strip
-        innerStrip.setColors(innerStrip.Color(innerRED, innerGREEN, innerBLUE), innerStrip.Color(innerBACKGROUNDRED, innerBACKGROUNDGREEN, innerBACKGROUNDBLUE)); // Set the colors of the strip
-        innerStrip.setElectronAmount(INPIXELAMOUNT); // Set the amount of electrons in the strip
-
-        Serial.println("Setting up inner strip2...");
-        innerStrip2.setup(BRIGHTNESS);
-        innerStrip2.setColors(innerStrip2.Color(innerRED, innerGREEN, innerBLUE), innerStrip2.Color(innerBACKGROUNDRED, innerBACKGROUNDGREEN, innerBACKGROUNDBLUE)); // Set the colors of the strip
-        innerStrip2.setElectronAmount(INPIXELAMOUNT); // Set the amount of electrons in the strip
-
-        // Setup outer strip
-        Serial.println("Setting up outer strip 1...");
-        outerStrip.setup(BRIGHTNESS); // This initializes the strip
-        outerStrip.setColors(outerStrip.Color(outerRED, outerGREEN, outerBLUE), outerStrip.Color(outerBACKGROUNDRED, outerBACKGROUNDGREEN, outerBACKGROUNDBLUE)); // Set the colors of the strip
-        outerStrip.setElectronAmount(OUTPIXELAMOUNT); // Set the amount of electrons in the strip
-
-        Serial.println("Setting up outer strip 2...");
-        outerStrip2.setup(BRIGHTNESS);
-        outerStrip2.setColors(outerStrip2.Color(outerRED, outerGREEN, outerBLUE), outerStrip2.Color(outerBACKGROUNDRED, outerBACKGROUNDGREEN, outerBACKGROUNDBLUE)); // Set the colors of the strip
-        outerStrip2.setElectronAmount(OUTPIXELAMOUNT); // Set the amount of electrons in the strip
-
-        Serial.println("Setting up outer strip 3...");
-        outerStrip3.setup(BRIGHTNESS);
-        outerStrip3.setColors(outerStrip3.Color(outerRED, outerGREEN, outerBLUE), outerStrip3.Color(outerBACKGROUNDRED, outerBACKGROUNDGREEN, outerBACKGROUNDBLUE)); // Set the colors of the strip
-        outerStrip3.setElectronAmount(OUTPIXELAMOUNT); // Set the amount of electrons in the strip
-        // Setup small strip
-        Serial.println("Setting up small strip...");
-        smallStrip.setup(BRIGHTNESS); // This initializes the strip
-        smallStrip.setColors(smallStrip.Color(smallRED, smallGREEN, smallBLUE), smallStrip.Color(smallBACKGROUNDRED, smallBACKGROUNDGREEN, smallBACKGROUNDBLUE)); // Set the colors of the strip
-        smallStrip.setElectronAmount(SMALLPIXELAMOUNT); // Set the amount of electrons in the strip
-        Serial.println("Done setting up strips!");
-    }
-
-    void moveElectronForward() {
-        innerStrip.moveColorForwardOnce();
-        innerStrip2.moveColorForwardOnce();
-        outerStrip.moveColorForwardOnce();
-        outerStrip2.moveColorForwardOnce();
-        outerStrip3.moveColorForwardOnce();
-        smallStrip.moveColorForwardOnce();
-    }
-
-    void updateBlinks() {
-        innerStrip.updateBlink();
-        innerStrip2.updateBlink();
-        outerStrip.updateBlink();
-        outerStrip2.updateBlink();
-        outerStrip3.updateBlink();
-        smallStrip.updateBlink();
-    }
-
-    void blinkAll(int times) {
-        innerStrip.startBlink(times);
-        outerStrip.startBlink(times);
-    }
-
-    void switchPixel() {
-    if (innerStrip.electronAmount <= outerStrip.electronAmount) {
-        innerStrip.increaseElectronAmount();
-        outerStrip.decreaseElectronAmount();
-    }
-    else {
-        innerStrip.decreaseElectronAmount();
-        outerStrip.increaseElectronAmount();
-    }
-    }
-
-    bool shouldSwitch() {
-        return millis() - lastSwitchTime >= SWITCHTIME * 1000;
-    }
-
-    void runSwitch() {
-        Serial.println("Blinking! as " + String(SWITCHTIME) + " Seconds have passed."); // Print that we are blinking
-        lastSwitchTime = millis(); // Set the last switch time to the current time
-        stripCommands::blinkAll(BLINKAMOUNT); // Blink the pixels
-        stripCommands::switchPixel(); // Switch the pixels
-        return;
-    }
-}
 
 void setup() {
   Serial.begin(115200); // Start the serial connection
@@ -218,8 +118,11 @@ void cloudSetup() {
 
   // Set the colors of the strips
   innerStripColor.getCloudValue().setColorRGB(innerRED, innerGREEN, innerBLUE);
+  innerStripColor.updateLocalTimestamp();
   outerStripColor.getCloudValue().setColorRGB(outerRED, outerGREEN, outerBLUE);
+  outerStripColor.updateLocalTimestamp();
   smallStripColor.getCloudValue().setColorRGB(smallRED, smallGREEN, smallBLUE);
+  smallStripColor.updateLocalTimestamp();
 
   // setup all CLI commands
   setupCommands(&cloudCLI);
@@ -325,22 +228,33 @@ void cloudLoop(void *pvParameters) {
 #if defined(ARDUINO_ARCH_ESP32) || defined(ARDUINO_ARCH_ESP8266) // only include if we are on an ESP
 void onInnerStripColorChange() {
   Color color = innerStripColor.getValue();
-  debugPrintln("Changing inner strip color to " + String(color.hue) + ", " + String(color.sat) + ", " + String(color.bri));
+  uint8_t red;
+  uint8_t green;
+  uint8_t blue;
+  color.getRGB(red, green, blue);
+  debugPrintln("Changing inner strip color to " + String(red) + ", " + String(green) + ", " + String(blue));
   innerStrip.setElectronColor(innerStrip.ColorHSV(color.hue, color.sat, color.bri));
   innerStrip2.setElectronColor(innerStrip2.ColorHSV(color.hue, color.sat, color.bri));
 }
 
 void onOuterStripColorChange() {
-  Color color = outerStripColor.getValue();
-  debugPrintln("Changing outer strip color to " + String(color.hue) + ", " + String(color.sat) + ", " + String(color.bri));
+  Color color = outerStripColor.getValue();  uint8_t red;
+  uint8_t green;
+  uint8_t blue;
+  color.getRGB(red, green, blue);
+  debugPrintln("Changing inner strip color to " + String(red) + ", " + String(green) + ", " + String(blue));
   outerStrip.setElectronColor(outerStrip.ColorHSV(color.hue, color.sat, color.bri));
   outerStrip2.setElectronColor(outerStrip2.ColorHSV(color.hue, color.sat, color.bri));
   outerStrip3.setElectronColor(outerStrip3.ColorHSV(color.hue, color.sat, color.bri));
 }
 
 void onSmallStripColorChange() {
-  Color color = smallStripColor.getValue();
-  debugPrintln("Changing small strip color to " + String(color.hue) + ", " + String(color.sat) + ", " + String(color.bri));
+  Color color = smallStripColor.getValue();  
+  uint8_t red;
+  uint8_t green;
+  uint8_t blue;
+  color.getRGB(red, green, blue);
+  debugPrintln("Changing inner strip color to " + String(red) + ", " + String(green) + ", " + String(blue));
   smallStrip.setElectronColor(smallStrip.ColorHSV(color.hue, color.sat, color.bri));
 }
 
