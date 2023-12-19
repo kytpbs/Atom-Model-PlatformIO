@@ -22,9 +22,7 @@ void setupOTA(CloudSerialSystem* cloudCLISystem) {
     
     Serial.println("Done setting up Server!");
     
-    ElegantOTA.setAuth(USERNAME, PASSWORD);
-
-    ElegantOTA.begin(&server);    // Start ElegantOTA
+    ElegantOTA.begin(&server, USERNAME, PASSWORD);    // Start ElegantOTA with auth
 
     server.begin();
     cloudCommandLine->debugPrint("OTA/HTTP server started");
