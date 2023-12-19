@@ -7,6 +7,7 @@
 #if !defined(SERIALCOMMANDSSYSTEM_H) && (defined(ARDUINO_ARCH_ESP32) || defined(ARDUINO_ARCH_ESP8266)) // STD does not exist on Arduino
 #define SERIALCOMMANDSSYSTEM_H
 #include <Arduino.h>
+#include <Preferences.h>
 #include <ArduinoIoTCloud.h>
 #include <map>
 #include <vector>
@@ -17,10 +18,11 @@
 
 class CloudSerialSystem {
     private:
+        Preferences preferences;
         String* cloudSerialObject;
         std::map<String, void (*)(CloudSerialSystem*, std::vector<String>* /*Argv*/)> commandsList;
         std::queue<String> printBuffer;
-        bool debug = true;
+        bool debug;
     public:
     CloudSerialSystem(String* cloudSerialObject);
     void addCommand(String commandName, void (*function)(CloudSerialSystem*, std::vector<String>*));

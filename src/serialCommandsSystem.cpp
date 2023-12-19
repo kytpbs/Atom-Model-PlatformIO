@@ -2,6 +2,8 @@
 #ifdef SERIALCOMMANDSSYSTEM_H // only include this file if serialCommandsSystem.h is included
 
 CloudSerialSystem::CloudSerialSystem(String* cloudSerialObject) {
+    this->preferences.begin("serialCommandsSystem", false);
+    this->debug = this->preferences.getBool("debug", true);
     this->cloudSerialObject = cloudSerialObject;
 }
 
@@ -45,6 +47,7 @@ void CloudSerialSystem::debugPrint(String message) {
 
 void CloudSerialSystem::setDebug(bool debug) {
     this->debug = debug;
+    this->preferences.putBool("debug", debug);
 }
 
 bool CloudSerialSystem::getDebug() {
