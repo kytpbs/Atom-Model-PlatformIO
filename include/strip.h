@@ -111,7 +111,7 @@ class NeoElectrons: public Adafruit_NeoPixel{
         /**
          * Starts the blink.
         */
-        void startBlink(int times = 1) {blinkTimes = times; blinkStartTime = millis();}
+        void startBlink(int times = 1) {blinkTimes = times * 2; blinkStartTime = millis();} //! Multiply by 2 because it will blink on and off
 
         /**
          * Checks if it should be blinking and blinks if it should
