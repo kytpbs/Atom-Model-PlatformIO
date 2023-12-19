@@ -280,14 +280,14 @@ void onLedCountsChange() {
   debugPrintln("Changing led counts to " + String(counts[0]) + ", " + String(counts[1])
    + ", " + String(counts[2]) + ", " + String(counts[3]) + ", " + String(counts[4]) + ", " + String(counts[5]));
   
-  smallStrip.setElectronAmount(counts[0]);
+  smallStrip.updateLength(counts[0]);
 
-  innerStrip.setElectronAmount(counts[1]);
-  innerStrip2.setElectronAmount(counts[2]);
-  
-  outerStrip.setElectronAmount(counts[3]);
-  outerStrip2.setElectronAmount(counts[4]);
-  outerStrip3.setElectronAmount(counts[5]);
+  innerStrip.updateLength(counts[1]);
+  innerStrip2.updateLength(counts[2]);
+
+  outerStrip.updateLength(counts[3]);
+  outerStrip2.updateLength(counts[4]);
+  outerStrip3.updateLength(counts[5]);
 }
 
 void onCloudSerialChange() { // Will only give the newest message, NICE!
