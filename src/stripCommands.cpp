@@ -38,7 +38,6 @@ namespace stripCommands {
         Serial.println("Done setting up strips!");
     }
 
-
     void runSwitch() {
         Serial.println("Blinking! as " + String(SWITCHTIME) + " Seconds have passed."); // Print that we are blinking
         lastSwitchTime = millis(); // Set the last switch time to the current time
@@ -83,5 +82,16 @@ namespace stripCommands {
 
     bool shouldSwitch() {
         return millis() - lastSwitchTime >= SWITCHTIME * 1000;
+    }
+
+    void setBrightness(int brightness) {
+        smallStrip.setBrightness(brightness);
+        
+        innerStrip.setBrightness(brightness);
+        innerStrip2.setBrightness(brightness);
+        
+        outerStrip.setBrightness(brightness);
+        outerStrip2.setBrightness(brightness);
+        outerStrip3.setBrightness(brightness);
     }
 }

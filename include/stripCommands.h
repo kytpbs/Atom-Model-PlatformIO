@@ -37,6 +37,12 @@ namespace stripCommands {
     void switchPixel();
 
     /**
+     * @brief Sets the brightness of the LED strips.
+     * @param brightness The brightness to set the LED strips to.
+    */
+    void setBrightness(int brightness);
+
+    /**
      * @brief Checks if the electrons should switch between the inner and outer strip.
      * @return True if the electrons should switch, false otherwise.
      */
