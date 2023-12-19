@@ -294,7 +294,7 @@ void onCloudSerialChange() { // Will only give the newest message, NICE!
   Serial.println("New cloudSerial Command: " + cloudSerial);
   String tmpSerial = cloudSerial;
   
-  if (tmpSerial.isEmpty() || tmpSerial == "" || tmpSerial == " ") {
+  if (tmpSerial.isEmpty() || tmpSerial == "" || tmpSerial == " " || tmpSerial == "" /* Clear messages command. */) {
     return;
   }
 
