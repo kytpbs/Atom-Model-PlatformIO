@@ -39,7 +39,7 @@ std::vector<String> splitStringtoVec(String string) {
 String joinString(std::vector<String>* argv, String separator) {
     // return String("Not implemented yet!");
     String string = "";
-    for (int i = 0; i < argv->size(); i++) {
+    for (unsigned int i = 0; i < argv->size(); i++) {
         string = string + argv->at(i);
         if (i != argv->size() - 1) {
             string += separator;
