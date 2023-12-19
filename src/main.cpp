@@ -196,8 +196,7 @@ void OTASetup() {
 
 void OTALoop(void *pvParameters) {
   bool firstRun = true;
-  Serial.print("OTA Loop currently running on core: ");
-  Serial.println(xPortGetCoreID());
+  Serial.println("OTA Loop currently running on core: " + String(xPortGetCoreID()));
   for (;;) { // infinite loop
     if (firstRun && WiFi.status() == WL_CONNECTED) {
       firstRun = false;
@@ -211,8 +210,7 @@ void OTALoop(void *pvParameters) {
 }
 
 void cloudLoop(void *pvParameters) {
-  Serial.print("Cloud Loop currently running on core: ");
-  Serial.println(xPortGetCoreID());
+  Serial.println("Cloud Loop currently running on core: " + String(xPortGetCoreID()));
   for (;;) { // infinite loop
     ArduinoCloud.update();
     if (connectedToCloud) { // handle Serial Output
