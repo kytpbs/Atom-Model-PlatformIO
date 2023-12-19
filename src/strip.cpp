@@ -47,18 +47,22 @@ void moveColorForwardOnceLib(Adafruit_NeoPixel *strip, uint32_t color, uint32_t 
 /* ELECTRONS CLASS */
 NeoElectrons::NeoElectrons(): Adafruit_NeoPixel() {
     this->pixelSpace = DEFAULTPIXELSPACE;
+    this->electronAmount = SMALLPIXELAMOUNT;
 }
 
 NeoElectrons::NeoElectrons(uint16_t n, int16_t p, neoPixelType t): Adafruit_NeoPixel(n, p, t) {
     this->pixelSpace = DEFAULTPIXELSPACE;
+    this->electronAmount = SMALLPIXELAMOUNT;
 }
 
 NeoElectrons::NeoElectrons(uint16_t n, int16_t p): Adafruit_NeoPixel(n, p) {
     this->pixelSpace = DEFAULTPIXELSPACE;
+    this->electronAmount = SMALLPIXELAMOUNT;
 }
 
 NeoElectrons::NeoElectrons(uint16_t n, int16_t p, neoPixelType t, int pixelSpace): Adafruit_NeoPixel(n, p, t) {
     this->pixelSpace = pixelSpace;
+    this->electronAmount = SMALLPIXELAMOUNT;
 }
 
 void NeoElectrons::setup(int brightness) {
@@ -114,13 +118,15 @@ void NeoElectrons::setColors(uint32_t electronColor, uint32_t backgroundColor) {
 }
 
 void NeoElectrons::updateBlink(unsigned int delay) {
-    if (isBlinking()) {
-        // If the blink has finished
-        if (millis() - blinkStartTime >= delay) {
-            blinkStartTime = millis();
-            runBlink();
-            blinkTimes--;
-        }
+    if (!isBlinking()) {
+        return;
+    }
+    
+    // If the blink delay has finished async style, run the blink
+    if (millis() - blinkStartTime >= delay) {
+        blinkStartTime = millis();
+        runBlink();
+        blinkTimes--;
     }
 }
 
