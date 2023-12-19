@@ -1,9 +1,9 @@
 #include "serialCommandsSystem.h"
 #ifdef SERIALCOMMANDSSYSTEM_H // only include this file if serialCommandsSystem.h is included
 
+bool firstRun = true; // will be used to setup "debug" preference, and initialize the preferences object
+
 CloudSerialSystem::CloudSerialSystem(String* cloudSerialObject) {
-    this->preferences.begin("serialCommandsSystem", false);
-    this->debug = this->preferences.getBool("debug", true);
     this->cloudSerialObject = cloudSerialObject;
 }
 
@@ -19,7 +19,7 @@ void CloudSerialSystem::checkForCommands(String command) {
     int spaceIndex = command.indexOf(" ");
     bool hasArgs = spaceIndex != -1;
     
-    if (spaceIndex == -1) {
+    if (!hasArgs) {
         spaceIndex = command.length();
     }
 
@@ -39,6 +39,14 @@ void CloudSerialSystem::checkForCommands(String command) {
 }
 
 void CloudSerialSystem::debugPrint(String message) {
+    if (firstRun) {
+        this->preferences.begin("cloudSerial", false);
+        this->debug = this->preferences.getBool("debug", true);
+        this->debugPrint("Debug mode: " + String(this->debug ? "true" : "false"));
+        this->preferences.end();
+        firstRun = false;
+    }
+    
     if (this->debug) {
         this->print("DEBUG - " + message); // only print to cloudSerial if debug is enabled
     }
@@ -47,7 +55,9 @@ void CloudSerialSystem::debugPrint(String message) {
 
 void CloudSerialSystem::setDebug(bool debug) {
     this->debug = debug;
+    this->preferences.begin("cloudSerial", false);
     this->preferences.putBool("debug", debug);
+    this->preferences.end();
 }
 
 bool CloudSerialSystem::getDebug() {
@@ -57,7 +67,6 @@ bool CloudSerialSystem::getDebug() {
 void CloudSerialSystem::handlePrintQueue() {
     if (this->printBuffer.size() > 0) {
         String message = this->printBuffer.front();
-        Serial.println("Printing message: \"" + message + "\" to cloudSerial");
         this->printBuffer.pop();
         this->cloudSerialObject->operator= (message);
     }
