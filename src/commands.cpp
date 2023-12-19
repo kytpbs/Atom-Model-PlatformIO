@@ -59,11 +59,28 @@ command(getIP) {
     cloudSerialSystem->print(WiFi.localIP().toString());
 }
 
+command(setBrightness) {
+    if (argv->size() == 0) {
+        cloudSerialSystem->print("No arguments provided! Current brightness: " + String(smallStrip.getBrightness()));
+        return;
+    }
+    int brightness = argv->at(0).toInt();
+    if (brightness < 0 || brightness > 255) {
+        cloudSerialSystem->print("Invalid argument! Not changing brightness. Current brightness: " + String(BRIGHTNESS));
+        return;
+    }
+    stripCommands::setBrightness(brightness);
+    cloudSerialSystem->print("Brightness set to " + String(brightness));
+}
+
 void setupCommands(CloudSerialSystem* cloudSerialSystem) {
     cloudSerialSystem->addCommand("ping", ping);
     cloudSerialSystem->addCommand("echo", echo);
+    
     cloudSerialSystem->addCommand("switch", switchElectronOnStrips);
     cloudSerialSystem->addCommand("blink", blinkStrips);
+    cloudSerialSystem->addCommand("brightness", setBrightness);
+
     cloudSerialSystem->addCommand("debug", setDebugMode);
     cloudSerialSystem->addCommand("reboot", reboot);
     cloudSerialSystem->addCommand("ip", getIP);

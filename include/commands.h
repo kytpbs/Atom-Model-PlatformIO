@@ -22,10 +22,15 @@ command(reboot);
 
 command(getIP);
 
+/* STRIP */
 void switchElectronOnStrips(CloudSerialSystem* cloudSerialSystem, std::vector<String>* argv);
 
 void blinkStrips(CloudSerialSystem* cloudSerialSystem, std::vector<String>* argv);
 
+command(setBrightness);
+
+
+/* OTHER */
 void setupCommands(CloudSerialSystem* cloudSerialSystem);
 
 #endif
