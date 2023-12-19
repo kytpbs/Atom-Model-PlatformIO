@@ -47,10 +47,4 @@ namespace stripCommands {
      * @return True if the electrons should switch, false otherwise.
      */
     bool shouldSwitch();
-
-    /**
-     * @brief Gets the timestamp of the last switch.
-     * @return The timestamp of the last switch.
-     */
-    unsigned long getLastSwitchTime();
 }
