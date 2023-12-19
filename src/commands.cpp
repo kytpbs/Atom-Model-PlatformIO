@@ -14,13 +14,11 @@ void echo(CloudSerialSystem* cloudSerialSystem, std::vector<String>* argv) {
 }
 
 void switchElectronOnStrips(CloudSerialSystem* cloudSerialSystem, std::vector<String>* argv) {
-    // stripCommands::runSwitch();
-    cloudSerialSystem->print("Currently not implemented!");
+    stripCommands::runSwitch();
+    cloudSerialSystem->print("Running Switch!");
 }
 
 void blinkStrips(CloudSerialSystem* cloudSerialSystem, std::vector<String>* argv) {
-    cloudSerialSystem->print("Currently not implemented!");
-    return; // TODO: implement this, but for now, just return
     int blinkAmount = BLINKAMOUNT;
     if (argv->size() > 0) {
         blinkAmount = argv->at(0).toInt();
@@ -29,7 +27,7 @@ void blinkStrips(CloudSerialSystem* cloudSerialSystem, std::vector<String>* argv
             blinkAmount = BLINKAMOUNT;
         }
     }
-    // stripCommands::blinkAll(blinkAmount);
+    stripCommands::blinkAll(blinkAmount);
     cloudSerialSystem->print("Blinking " + String(blinkAmount) + " times.");
 }
 

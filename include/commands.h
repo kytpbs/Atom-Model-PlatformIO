@@ -4,6 +4,7 @@
 #include "serialCommandsSystem.h"
 #include "stringTools.h"
 #include "Constants.h"
+#include "stripCommands.h"
 #ifdef ARDUINO_ARCH_ESP32
 #include "WiFi.h"
 #elif defined(ARDUINO_ARCH_ESP8266)
