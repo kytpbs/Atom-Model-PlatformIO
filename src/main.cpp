@@ -233,19 +233,20 @@ void onInnerStripColorChange() {
   uint8_t blue;
   color.getRGB(red, green, blue);
   debugPrintln("Changing inner strip color to " + String(red) + ", " + String(green) + ", " + String(blue));
-  innerStrip.setElectronColor(innerStrip.ColorHSV(color.hue, color.sat, color.bri));
-  innerStrip2.setElectronColor(innerStrip2.ColorHSV(color.hue, color.sat, color.bri));
+  innerStrip.setElectronColor(innerStrip.Color(red, green, blue));
+  innerStrip2.setElectronColor(innerStrip2.Color(red, green, blue));
 }
 
 void onOuterStripColorChange() {
-  Color color = outerStripColor.getValue();  uint8_t red;
+  Color color = outerStripColor.getValue();  
+  uint8_t red;
   uint8_t green;
   uint8_t blue;
   color.getRGB(red, green, blue);
   debugPrintln("Changing inner strip color to " + String(red) + ", " + String(green) + ", " + String(blue));
-  outerStrip.setElectronColor(outerStrip.ColorHSV(color.hue, color.sat, color.bri));
-  outerStrip2.setElectronColor(outerStrip2.ColorHSV(color.hue, color.sat, color.bri));
-  outerStrip3.setElectronColor(outerStrip3.ColorHSV(color.hue, color.sat, color.bri));
+  outerStrip.setElectronColor(outerStrip.Color(red, green, blue));
+  outerStrip2.setElectronColor(outerStrip2.Color(red, green, blue));
+  outerStrip3.setElectronColor(outerStrip3.Color(red, green, blue));
 }
 
 void onSmallStripColorChange() {
@@ -255,7 +256,7 @@ void onSmallStripColorChange() {
   uint8_t blue;
   color.getRGB(red, green, blue);
   debugPrintln("Changing inner strip color to " + String(red) + ", " + String(green) + ", " + String(blue));
-  smallStrip.setElectronColor(smallStrip.ColorHSV(color.hue, color.sat, color.bri));
+  smallStrip.setElectronColor(smallStrip.Color(red, green, blue));
 }
 
 void onLedCountsChange() {
