@@ -116,14 +116,6 @@ void cloudSetup() {
   ArduinoCloud.addCallback(ArduinoIoTCloudEvent::SYNC, onCloudSync);
   ArduinoCloud.addCallback(ArduinoIoTCloudEvent::DISCONNECT, onCloudDisconnect);
 
-  // Set the colors of the strips
-  innerStripColor.getCloudValue().setColorRGB(innerRED, innerGREEN, innerBLUE);
-  innerStripColor.updateLocalTimestamp();
-  outerStripColor.getCloudValue().setColorRGB(outerRED, outerGREEN, outerBLUE);
-  outerStripColor.updateLocalTimestamp();
-  smallStripColor.getCloudValue().setColorRGB(smallRED, smallGREEN, smallBLUE);
-  smallStripColor.updateLocalTimestamp();
-
   // setup all CLI commands
   setupCommands(&cloudCLI);
 
