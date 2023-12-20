@@ -42,9 +42,9 @@ void CloudSerialSystem::debugPrint(String message) {
     if (firstRun) {
         this->preferences.begin("cloudSerial", false);
         this->debug = this->preferences.getBool("debug", true);
+        firstRun = false;
         this->debugPrint("Debug mode: " + String(this->debug ? "true" : "false"));
         this->preferences.end();
-        firstRun = false;
     }
     
     if (this->debug) {
