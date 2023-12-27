@@ -74,6 +74,7 @@ void setup() {
 #ifdef ARDUINO_ARCH_ESP32
   Serial.println("On ESP, ENABLING CLOUD");
   cloudSetup();
+  stripCommands::createTasksForEach(true);
 #elif defined(ARDUINO_ARCH_ESP8266)
   Serial.println("On ESP8266, ENABLING CLOUD (in main loop)");
   cloudSetup();
@@ -150,8 +151,10 @@ void loop() {
   blinkBuiltInLed(); // Blink the builtin led to show that the program is running, but not on an ESP as the pin changes from board to board, might change in the future
 #endif
 
-  stripCommands::moveElectronForward(); // Move The Electrons Forward
   stripCommands::updateBlinks(); // Run the updateBlink function for all the strips
+#ifndef ARDUINO_ARCH_ESP32 // Each strip has its own update function, on a separate thread, so we don't need to call it here.
+  stripCommands::moveElectronForward(); // Move The Electrons Forward
+#endif
 }
 
 /*   CLOUD FUNCTIONS   */
