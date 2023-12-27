@@ -177,4 +177,129 @@ namespace stripCommands {
         outerStrip2.setBrightness(brightness);
         outerStrip3.setBrightness(brightness);
     }
+
+#ifdef ARDUINO_ARCH_ESP32
+    void createTasksForEach(bool isInfinite) {
+        if (isInfinite) {
+            _createTasksInfinite();
+        }
+        else {
+            _createTasks();
+        }
+    }
+
+    void _createTasksInfinite(int stackSize, int priority) {
+        Serial.println("Creating tasks...");
+        
+        xTaskCreatePinnedToCore(
+            ESP32_utils::smallStripLoop, /* Function to implement the task */
+            "smallStripLoop",            /* Name of the task */
+            stackSize,                   /* Stack size in words */
+            NULL,                        /* Task input parameter */
+            priority,                    /* Priority of the task */
+            NULL,                        /* Task handle. */
+            1);                          /* Core where the task should run */
+        
+        xTaskCreatePinnedToCore(
+            ESP32_utils::innerStrip1Loop, /* Function to implement the task */
+            "innerStrip1Loop",            /* Name of the task */
+            stackSize,                    /* Stack size in words */
+            NULL,                         /* Task input parameter */
+            priority,                     /* Priority of the task */
+            NULL,                         /* Task handle. */
+            1);                           /* Core where the task should run */
+        
+        xTaskCreatePinnedToCore(
+            ESP32_utils::innerStrip2Loop, /* Function to implement the task */
+            "innerStrip2Loop",            /* Name of the task */
+            stackSize,                    /* Stack size in words */
+            NULL,                         /* Task input parameter */
+            priority,                     /* Priority of the task */
+            NULL,                         /* Task handle. */
+            1);                           /* Core where the task should run */
+        
+        xTaskCreatePinnedToCore(
+            ESP32_utils::outerStrip1Loop, /* Function to implement the task */
+            "outerStrip1Loop",            /* Name of the task */
+            stackSize,                    /* Stack size in words */
+            NULL,                         /* Task input parameter */
+            priority,                     /* Priority of the task */
+            NULL,                         /* Task handle. */
+            1);                           /* Core where the task should run */
+        
+        xTaskCreatePinnedToCore(
+            ESP32_utils::outerStrip2Loop, /* Function to implement the task */
+            "outerStrip2Loop",            /* Name of the task */
+            stackSize,                    /* Stack size in words */
+            NULL,                         /* Task input parameter */
+            priority,                     /* Priority of the task */
+            NULL,                         /* Task handle. */
+            1);                           /* Core where the task should run */
+        
+        xTaskCreatePinnedToCore(
+            ESP32_utils::outerStrip3Loop, /* Function to implement the task */
+            "outerStrip3Loop",            /* Name of the task */
+            stackSize,                    /* Stack size in words */
+            NULL,                         /* Task input parameter */
+            priority,                     /* Priority of the task */
+            NULL,                         /* Task handle. */
+            1);                           /* Core where the task should run */
+    }
+
+    void _createTasks(int stackSize, int priority) {
+        xTaskCreatePinnedToCore(
+            ESP32_utils::smallStripRun, /* Function to implement the task */
+            "smallStripRun",            /* Name of the task */
+            stackSize,                  /* Stack size in words */
+            NULL,                       /* Task input parameter */
+            priority,                   /* Priority of the task */
+            NULL,                       /* Task handle. */
+            1);                         /* Core where the task should run */
+        
+        xTaskCreatePinnedToCore(
+            ESP32_utils::innerStrip1Run, /* Function to implement the task */
+            "innerStrip1Run",            /* Name of the task */
+            stackSize,                   /* Stack size in words */
+            NULL,                        /* Task input parameter */
+            priority,                    /* Priority of the task */
+            NULL,                        /* Task handle. */
+            1);                          /* Core where the task should run */
+        
+        xTaskCreatePinnedToCore(
+            ESP32_utils::innerStrip2Run, /* Function to implement the task */
+            "innerStrip2Run",            /* Name of the task */
+            stackSize,                   /* Stack size in words */
+            NULL,                        /* Task input parameter */
+            priority,                    /* Priority of the task */
+            NULL,                        /* Task handle. */
+            1);                          /* Core where the task should run */
+        
+        xTaskCreatePinnedToCore(
+            ESP32_utils::outerStrip1Run, /* Function to implement the task */
+            "outerStrip1Run",            /* Name of the task */
+            stackSize,                   /* Stack size in words */
+            NULL,                        /* Task input parameter */
+            priority,                    /* Priority of the task */
+            NULL,                        /* Task handle. */
+            1);                          /* Core where the task should run */
+        
+        xTaskCreatePinnedToCore(
+            ESP32_utils::outerStrip2Run, /* Function to implement the task */
+            "outerStrip2Run",            /* Name of the task */
+            stackSize,                   /* Stack size in words */
+            NULL,                        /* Task input parameter */
+            priority,                    /* Priority of the task */
+            NULL,                        /* Task handle. */
+            1);                          /* Core where the task should run */
+        
+        xTaskCreatePinnedToCore(
+            ESP32_utils::outerStrip3Run, /* Function to implement the task */
+            "outerStrip3Run",            /* Name of the task */
+            stackSize,                   /* Stack size in words */
+            NULL,                        /* Task input parameter */
+            priority,                    /* Priority of the task */
+            NULL,                        /* Task handle. */
+            1);                          /* Core where the task should run */
+    }
+#endif
 }
