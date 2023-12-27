@@ -7,6 +7,8 @@
 
 #ifdef ARDUINO_ARCH_ESP32 // only include if we are on an ESP
 
+#define LOOPDELAY 10 // The amount of time to delay the loop in milliseconds
+
 #define OUTDATA 21 // The pin that the outer strip is connected to
 #define OUTDATA2 19 // The pin that the outer strip is connected to
 #define OUTDATA3 18 // The pin that the outer strip is connected to
