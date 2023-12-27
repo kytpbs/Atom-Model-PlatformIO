@@ -1,5 +1,24 @@
+#pragma once
 #include "stripVariables.h"
 #include "Constants.h"
+
+#ifdef ARDUINO_ARCH_ESP32
+namespace ESP32_utils {
+    void smallStripLoop(void* pvParameters);
+    void innerStrip1Loop(void* pvParameters);
+    void innerStrip2Loop(void* pvParameters);
+    void outerStrip1Loop(void* pvParameters);
+    void outerStrip2Loop(void* pvParameters);
+    void outerStrip3Loop(void* pvParameters);
+
+    void smallStripRun(void* pvParameters);
+    void innerStrip1Run(void* pvParameters);
+    void innerStrip2Run(void* pvParameters);
+    void outerStrip1Run(void* pvParameters);
+    void outerStrip2Run(void* pvParameters);
+    void outerStrip3Run(void* pvParameters);
+};
+#endif
 
 namespace stripCommands {
 
@@ -47,4 +66,27 @@ namespace stripCommands {
      * @return True if the electrons should switch, false otherwise.
      */
     bool shouldSwitch();
+
+#ifdef ARDUINO_ARCH_ESP32
+    /**
+     * @brief Creates tasks for each strip.
+     * @param isInfinite Whether or not the tasks should be infinite.
+     * @note This function should only be called once.
+     * @note This function is only available on the ESP32.
+     * @details This function will pin the tasks to core 1.
+    */
+    void createTasksForEach(bool isInfinite);
+
+    /**
+     * @brief Creates tasks for each strip that are not infinite.
+     * @param stackSize The stack size of the tasks.
+     * @param priority The priority of the tasks.
+     * @note This function will automatically kill the tasks after they are done.
+     * @note This function should only be called once.
+     * @note This function is only available on the ESP32.
+     * @details This function will pin the tasks to core 1.
+    */
+    void _createTasks(int stackSize = 2048, int priority = 2);
+    void _createTasksInfinite(int stackSize = 2048, int priority = 2); //! Will pin to core 1! (Core 0 is used for WiFi, and other stuff, DON'T PIN TO CORE 0!)
+#endif
 }
