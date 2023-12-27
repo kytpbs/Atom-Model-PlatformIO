@@ -2,6 +2,89 @@
 
 unsigned long lastSwitchTime = 0; // Create a variable to store the last switch time
 
+#ifdef ARDUINO_ARCH_ESP32
+namespace ESP32_utils {
+    void smallStripLoop(void* pvParameters) {
+        Serial.println("Starting small strip loop...");
+        for (;;) {
+            smallStrip.moveColorForwardOnce();
+            delay(LOOPDELAY);
+        }
+    }
+
+    void innerStrip1Loop(void* pvParameters) {
+        Serial.println("Starting inner strip 1 loop...");
+        for (;;) {
+            innerStrip.moveColorForwardOnce();
+            delay(LOOPDELAY);
+        }
+    }
+
+    void innerStrip2Loop(void* pvParameters) {
+        Serial.println("Starting inner strip 2 loop...");
+        for (;;) {
+            innerStrip2.moveColorForwardOnce();
+            delay(LOOPDELAY);
+        }
+    }
+
+    void outerStrip1Loop(void* pvParameters) {
+        Serial.println("Starting outer strip 1 loop...");
+        for (;;) {
+            outerStrip.moveColorForwardOnce();
+            delay(LOOPDELAY);
+        }
+    }
+
+    void outerStrip2Loop(void* pvParameters) {
+        Serial.println("Starting outer strip 2 loop...");
+        for (;;) {
+            outerStrip2.moveColorForwardOnce();
+            delay(LOOPDELAY);
+        }
+    }
+
+    void outerStrip3Loop(void* pvParameters) {
+        Serial.println("Starting outer strip 3 loop...");
+        for (;;) {
+            outerStrip3.moveColorForwardOnce();
+            delay(LOOPDELAY);
+        }
+    }
+
+
+    void smallStripRun(void* pvParameters) {
+        smallStrip.moveColorForwardOnce();
+        vTaskDelete(NULL); // Delete the task
+    }
+
+    void innerStrip1Run(void* pvParameters) {
+        innerStrip.moveColorForwardOnce();
+        vTaskDelete(NULL); // Delete the task
+    }
+
+    void innerStrip2Run(void* pvParameters) {
+        innerStrip2.moveColorForwardOnce();
+        vTaskDelete(NULL); // Delete the task
+    }
+
+    void outerStrip1Run(void* pvParameters) {
+        outerStrip.moveColorForwardOnce();
+        vTaskDelete(NULL); // Delete the task
+    }
+
+    void outerStrip2Run(void* pvParameters) {
+        outerStrip2.moveColorForwardOnce();
+        vTaskDelete(NULL); // Delete the task
+    }
+
+    void outerStrip3Run(void* pvParameters) {
+        outerStrip3.moveColorForwardOnce();
+        vTaskDelete(NULL); // Delete the task
+    }
+};
+#endif
+
 namespace stripCommands {
     void setupStrips() {
         // Setup inner strips
