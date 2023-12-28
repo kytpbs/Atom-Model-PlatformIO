@@ -75,7 +75,7 @@ namespace stripCommands {
      * @note This function is only available on the ESP32.
      * @details This function will pin the tasks to core 1.
     */
-    void createTasksForEach(bool isInfinite);
+    void createTasksForEach(bool isInfinite = true, int stackSize = 2048, int priority = 2);
 
     /**
      * @brief Creates tasks for each strip that are not infinite.
@@ -86,7 +86,7 @@ namespace stripCommands {
      * @note This function is only available on the ESP32.
      * @details This function will pin the tasks to core 1.
     */
-    void _createTasks(int stackSize = 2048, int priority = 2);
-    void _createTasksInfinite(int stackSize = 2048, int priority = 2); //! Will pin to core 1! (Core 0 is used for WiFi, and other stuff, DON'T PIN TO CORE 0!)
+    void _createTasks(int stackSize, int priority);
+    void _createTasksInfinite(int stackSize, int priority); //! Will pin to core 1! (Core 0 is used for WiFi, and other stuff, DON'T PIN TO CORE 0!)
 #endif
 }

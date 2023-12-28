@@ -179,12 +179,12 @@ namespace stripCommands {
     }
 
 #ifdef ARDUINO_ARCH_ESP32
-    void createTasksForEach(bool isInfinite) {
+    void createTasksForEach(bool isInfinite, int stackSize, int priority) {
         if (isInfinite) {
-            _createTasksInfinite();
+            _createTasksInfinite(stackSize, priority);
         }
         else {
-            _createTasks();
+            _createTasks(stackSize, priority);
         }
     }
 
