@@ -1,4 +1,4 @@
-file_path = ".pio\libdeps\esp32\ArduinoIoTCloud\src\AIoTC_Config.h"
+file_path = ".pio/libdeps/esp32/ArduinoIoTCloud/src/AIoTC_Config.h"
 test_script = "sed -i 's/define OTA_ENABLED/\/\/define OTA_ENABLED/g' " + file_path # made by copilot... I wouldn't recommend using it anyways.
 
 def disableOTA():
