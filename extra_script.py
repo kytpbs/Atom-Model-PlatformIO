@@ -1,3 +1,5 @@
+# This script disables Arduino IoT Cloud OTA, because it's not working properly in platformIO and it's annoying, also we have our own OTA.
+
 file_path = ".pio/libdeps/esp32/ArduinoIoTCloud/src/AIoTC_Config.h"
 test_script = "sed -i 's/define OTA_ENABLED/\/\/define OTA_ENABLED/g' " + file_path # made by copilot... I wouldn't recommend using it anyways.
 
